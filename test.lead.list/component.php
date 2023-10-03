@@ -5,29 +5,27 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
 }
 
 use \Bitrix\Crm;
-global $USER_FIELD_MANAGER; 
 
 if (\Bitrix\Main\Loader::includeModule('crm')) 
 { 
     $dbRes = CCrmLead::GetListEx( 
-			$arOrder = array('DATE_CREATE' => 'DESC'),  
-			$arFilter = array(),  
+			$arOrder   = array('DATE_CREATE' => 'DESC'),  
+			$arFilter  = array(),  
 			$arGroupBy = false,  
 			$arNavStartParams = false,  
-			$arSelectFields = array('ID', 'TITLE', 'DATE_CREATE', 'SOURCE_ID', 'ASSIGNED_BY_LAST_NAME', 'ASSIGNED_BY_NAME', 'STATUS_ID'),
-			//$arSelectFields = array('*'),
+			$arSelectFields = array('ID', 'TITLE', 'DATE_CREATE', 'SOURCE_ID', 'ASSIGNED_BY_LAST_NAME', 'ASSIGNED_BY_NAME', 'STATUS_ID', 'UF_CRM_LEAD_VERIFIED'),
 			$arOptions = array('QUERY_OPTIONS' => ['LIMIT' => $arParam['LEAD_COUNT']]) );
-	$arLeads = [];
+	$arLeads  = [];
 	$arSource = \CCrmStatus::GetStatus( 'SOURCE' );
 	$arStatus = \CCrmStatus::GetStatus( 'STATUS' );
 
 	while ($arRes = $dbRes->Fetch())
 	{
-		$arRes['UF_VERIFIED'] = $USER_FIELD_MANAGER->GetUserFieldValue('CRM_LEAD', 'UF_CRM_LEAD_VERIFIED', $arRes["ID"]);
 		$arRes['SOURCE_NAME'] = $arSource[$arRes['SOURCE_ID']]['NAME'];
 		$arRes['STATUS_NAME'] = $arStatus[$arRes['STATUS_ID']]['NAME'];
 		$arLeads[] = $arRes;
 	}
+	$arResult['LEADS'] = $arLeads;
 }
 
 $arrHeaders = [
@@ -39,9 +37,7 @@ $arrHeaders = [
 		    ['name' => GetMessage('COLUMN_NAME_VERIFIED')],
 		];
 
-		
 $arResult['HEADERS'] = $arrHeaders;
-$arResult['LEADS'] = $arLeads;
 $this->IncludeComponentTemplate();
 
 ?>

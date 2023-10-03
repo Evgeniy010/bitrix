@@ -13,8 +13,8 @@ CJSCore::Init(array('ajax'));
 </div>
 
 <div id="app">
-
 </div>
+
 <?
 if ($arResult['DATA']) // Если пользователь не авторизовался массив не существует
 {
@@ -23,21 +23,21 @@ if ($arResult['DATA']) // Если пользователь не авториз�
 	BX.Vue.create({
 		el: '#app',
 		data: {
-			items:<?=json_encode($arResult['DATA'])?>,
+			items:   <?=json_encode($arResult['DATA'])?>,
 			headers: <?=json_encode($arResult['HEADERS'])?>,
-			hist: <?=json_encode($arResult['PRIORITY_HISTORY'])?>,
+			hist:    <?=json_encode($arResult['PRIORITY_HISTORY'])?>,
 		},
 		
 		methods: {
 			pryority_up: function (item) {
 				let task_id = Number(item.ID);
-				task_name = item.TITLE;
-				if (Number(item.PRIORITY_UF)>1) {	
+				task_name   = item.TITLE;
+				if (Number(item.UF_PRIORITY)>1) {	
 					BX.ajax({
 						url: '/local/components/test.task.priority_change/ajax.php',
 						data: {
-							'ACTION': 'pryority_up',
-							'TASK': task_id,
+							'ACTION'   : 'pryority_up',
+							'TASK'     : task_id,
 							'TASK_NAME': task_name,
 						},
 						method: 'POST',
@@ -46,7 +46,7 @@ if ($arResult['DATA']) // Если пользователь не авториз�
 							switch(data)
 							{
 								case 'success':
-									item.PRIORITY_UF = Number(item.PRIORITY_UF) - 1;
+									item.UF_PRIORITY = Number(item.UF_PRIORITY) - 1;
 									break;
 								default:
 									alert('Возникли ошибки!');
@@ -64,13 +64,13 @@ if ($arResult['DATA']) // Если пользователь не авториз�
 			},
 			pryority_down: function (item) {
 				let task_id = Number(item.ID);
-				task_name = item.TITLE;
+				task_name   = item.TITLE;
 					
 					BX.ajax({
 						url: '/local/components/test.task.priority_change/ajax.php',
 						data: {
-							'ACTION': 'pryority_down',
-							'TASK': task_id,
+							'ACTION'   : 'pryority_down',
+							'TASK'     : task_id,
 							'TASK_NAME': task_name,
 						},
 						method: 'POST',
@@ -79,7 +79,7 @@ if ($arResult['DATA']) // Если пользователь не авториз�
 							switch(data)
 							{
 								case 'success':
-									item.PRIORITY_UF = Number(item.PRIORITY_UF) + 1;
+									item.UF_PRIORITY = Number(item.UF_PRIORITY) + 1;
 									break;
 								default:
 									alert('Возникли ошибки!');
@@ -88,13 +88,12 @@ if ($arResult['DATA']) // Если пользователь не авториз�
 						onfailure: e => {
 							alert(e);
 						}
-						
-					});
-					
+					});		
 			},
-			test: function (str) {alert(str);},
-
+		
 		},
+
+		
 		mounted: function () {
 				//this.test('mounted');
 		},
@@ -111,21 +110,11 @@ if ($arResult['DATA']) // Если пользователь не авториз�
 			</thead>
 			<tbody>
 				<tr v-for="(item, index) in items">
-					<td>
-					{{ item.TITLE }}
-					</td>
-					<td>
-					{{ item.CREATED_DATE }}
-					</td>
-					<td>
-					{{item.RESPONSIBLE_LAST_NAME}} {{item.RESPONSIBLE_NAME[0]}}.
-					</td>
-					<td>
-					{{item.CREATED_BY_LAST_NAME}} {{item.CREATED_BY_NAME[0]}}.
-					</td>
-					<td>
-					{{ item.PRIORITY_UF }}
-					</td>
+					<td>{{ item.TITLE }}</td>
+					<td>{{ item.CREATED_DATE }}</td>
+					<td>{{ item.RESPONSIBLE_LAST_NAME }} {{ item.RESPONSIBLE_NAME[0] }}.</td>
+					<td>{{ item.CREATED_BY_LAST_NAME  }} {{ item.CREATED_BY_NAME[0]  }}.</td>
+					<td>{{ item.UF_PRIORITY }}</td>
 					<td class='btnUpDown'>
 					<span class='btn' v-on:click="pryority_up(item)">
 						<i class="bi bi-caret-up"></i>
@@ -137,20 +126,14 @@ if ($arResult['DATA']) // Если пользователь не авториз�
 				</tr>
 			</tbody>
 			</table>
-		<?//	<button v-on:click="test1">123</button> ?>
 			<div class='priority_history' v-for="(item, index) in hist">
-			{{ item.c_date }} <a v-bind:href="item.url">{{ item.user_name }}</a> {{ item.text }}
+				{{ item.c_date }} <a v-bind:href="item.url">{{ item.user_name }}</a> {{ item.text }}
 			</div>
+
 			</div>
 	`
 	});
 </script>
-
-<div class='lead_list_wraper'>
-
-<?// var_dump( $arResult['DATA'] );?>
-
-</div>
 
 <? } else { ?>
 	<p>Информация доступна только авторизованным пользователям!</p>

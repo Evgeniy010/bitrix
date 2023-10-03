@@ -1,9 +1,4 @@
 <?php if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();?>
-<?
-Bitrix\Main\UI\Extension::load( extNames: "ui.vue");
-define('VUEJS_DEBUG', true);
-CJSCore::Init(array('ajax'));
-?>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
@@ -26,8 +21,8 @@ foreach ($arResult['LEADS'] as $lead)
 	<TD><?=$lead['STATUS_NAME']?></TD>
 	<TD>
 	<form id='verified' action="/local/components/test.lead.list/process.php" method="post">
-	<input type='hidden' name='LEAD_ID' value="<?=$lead['ID']?>" />
-	<button class='btn' type="submit"><?=($lead['UF_VERIFIED'] ? GetMessage('LEAD_CHECKED'): GetMessage('LEAD_UNCHECKED'))?></button>
+		<input type='hidden' name='LEAD_ID' value="<?=$lead['ID']?>" />
+		<button class='btn' type="submit"><?=($lead['UF_CRM_LEAD_VERIFIED'] ? GetMessage('LEAD_CHECKED'): GetMessage('LEAD_UNCHECKED'))?></button>
 	</form>
 	</TD></TR>
 <?}?>
