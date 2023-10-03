@@ -1,0 +1,50 @@
+.list_wraper {
+	background: white;
+	border-radius: 10px;
+	display: flex;
+	flex-direction: column;
+	padding: 10px;
+	margin: 5px 0;
+    align-items: center;
+	justify-content: space-around;
+}
+.caption {
+	font-size: 20px;
+	align-items: center;
+	justify-content: space-around;
+	padding-bottom: 10px;
+	
+	font-family: var(--ui-font-family-secondary,var(--ui-font-family-open-sans));
+	font-weight: 500;
+	line-height: 40px;
+	text-transform: uppercase;
+}
+
+.tbl, .tbl td{
+	padding: 2px;
+	border: 1px solid #333;
+	border-collapse: collapse;
+}
+
+.btnUpDown {
+	display: flex;
+	width: 40px;
+	flex-direction: column;
+	padding: 0 px !important;
+	
+}
+
+tbody tr td.btnUpDown .btn {
+	font-size: 1em;
+	border: 1px solid;
+	padding:0;
+	margin:0;
+	text-align: center;
+}
+tbody tr td.btnUpDown .btn:hover {
+	background: lightgrey;
+}
+
+.priority_history {
+	font-size: 0.9em;
+}
