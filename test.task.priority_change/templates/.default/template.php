@@ -20,6 +20,7 @@ if ($arResult['DATA']) // Если пользователь не авториз�
 {
 ?>
 <script type="text/javascript">
+var sortByPrice = function (d1, d2) { return (d1.UF_PRIORITY > d2.UF_PRIORITY) ? 1 : -1; };
 	BX.Vue.create({
 		el: '#app',
 		data: {
@@ -90,10 +91,12 @@ if ($arResult['DATA']) // Если пользователь не авториз�
 						}
 					});		
 			},
-		
 		},
-
-		
+		computed: {
+			sortedList () {
+                return this.items.sort(sortByPrice);
+             }
+		},
 		mounted: function () {
 				//this.test('mounted');
 		},
@@ -109,7 +112,7 @@ if ($arResult['DATA']) // Если пользователь не авториз�
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="(item, index) in items">
+				<tr v-for="(item, index) in sortedList">
 					<td>{{ item.TITLE }}</td>
 					<td>{{ item.CREATED_DATE }}</td>
 					<td>{{ item.RESPONSIBLE_LAST_NAME }} {{ item.RESPONSIBLE_NAME[0] }}.</td>
@@ -129,7 +132,6 @@ if ($arResult['DATA']) // Если пользователь не авториз�
 			<div class='priority_history' v-for="(item, index) in hist">
 				{{ item.c_date }} <a v-bind:href="item.url">{{ item.user_name }}</a> {{ item.text }}
 			</div>
-
 			</div>
 	`
 	});
