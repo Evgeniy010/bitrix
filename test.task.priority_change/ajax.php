@@ -11,7 +11,7 @@ use Bitrix\Main\Entity;
 
 
 if ( $_POST['ACTION'] ) {
-	if ( $_POST['TASK'] ) {
+	if (ISSET($_POST['TASK']) ) {
 		switch($_POST['ACTION']){
 			case 'pryority_up':
 				$direction = -1;
@@ -34,6 +34,40 @@ if ( $_POST['ACTION'] ) {
 	}	
 }
 
+if ($_GET['action']=='get_history_arr') {
+	if ($USER->IsAuthorized())
+	{ 
+		$hlbl    = 2;
+		$hlblock = HL\HighloadBlockTable::getById($hlbl)->fetch(); 
+		$entity  = HL\HighloadBlockTable::compileEntity($hlblock); 
+		$entity_data_class = $entity->getDataClass(); 
+
+		$rsData  = $entity_data_class::getList(array(
+			   "select" => array("*"),
+			   "order"  => array("ID" => "DESC"),
+			   "limit"  => 20,
+		));
+
+		while($arData = $rsData->Fetch()){
+			$rsUser = CUser::GetByID($arData['UF_USER_ID']);
+			$arUser = $rsUser->Fetch();
+			
+			$prHUserName   = $arUser["LAST_NAME"].' '.$arUser["NAME"];
+			$prHistDate    = FormatDate("d.m.Y H:i", MakeTimeStamp($arData['UF_CHANGE_DATE']));
+			$prHistUserURL = '/company/personal/user/'.$arData['UF_USER_ID'].'/';
+			$prHistText    = sprintf(' %s приоритет задачи %s', ($arData['UF_PIORITY_UP'] ? 'повысил(а)' : 'понизил(а)'), $arData['UF_TASK_NAME']);
+			
+			$arPrHistoryStr[] = array(
+					  'url' => $prHistUserURL,
+				   'c_date' => $prHistDate,
+				'user_name' => $prHUserName,
+					 'text' => $prHistText,			
+			);
+		}
+		header('Content-Type: application/json');
+		echo json_encode($arPrHistoryStr);
+	}
+}
 
 function add_HL_record($user_id, $user_name, $task_name, $direction){
 	$hlbl    = 2; // номер HL блока

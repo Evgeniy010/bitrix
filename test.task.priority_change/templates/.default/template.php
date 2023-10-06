@@ -20,13 +20,15 @@ if ($arResult['DATA']) // Если пользователь не авториз�
 {
 ?>
 <script type="text/javascript">
-var sortByPrice = function (d1, d2) { return (d1.UF_PRIORITY > d2.UF_PRIORITY) ? 1 : -1; };
+var sortByPriority = function (d1, d2) { return (Number(d1.UF_PRIORITY) > Number(d2.UF_PRIORITY)) ? 1 : -1; };
+
+
 	BX.Vue.create({
 		el: '#app',
 		data: {
 			items:   <?=json_encode($arResult['DATA'])?>,
 			headers: <?=json_encode($arResult['HEADERS'])?>,
-			hist:    <?=json_encode($arResult['PRIORITY_HISTORY'])?>,
+			hist:    <?=json_encode($arResult['PRIORITY_HISTORY'])?>, 
 		},
 		
 		methods: {
@@ -91,15 +93,34 @@ var sortByPrice = function (d1, d2) { return (d1.UF_PRIORITY > d2.UF_PRIORITY) ?
 						}
 					});		
 			},
+
+			get_history() {
+				fetch('/local/components/test.task.priority_change/ajax.php?action=get_history_arr')
+				.then(response => response.json())
+				.then(data => {
+					this.hist = data;
+				})
+				.catch(error => {
+					console.error('Ошибка:', error);
+				});
+			},
+			
 		},
 		computed: {
-			sortedList () {
-                return this.items.sort(sortByPrice);
-             }
+			sortedTask () {
+                return this.items.sort(sortByPriority);
+             },
+			 
 		},
 		mounted: function () {
-				//this.test('mounted');
+			//this.get_history();
 		},
+		watch: {
+			sortedTask: function () {
+			console.log('upd');
+			this.get_history(); 
+			
+		}},
 		
 		template: `
 			<div>
@@ -110,28 +131,28 @@ var sortByPrice = function (d1, d2) { return (d1.UF_PRIORITY > d2.UF_PRIORITY) ?
 						<strong>{{ item.name }}</strong>
 					</th>
 				</tr>
-			</thead>
-			<tbody>
-				<tr v-for="(item, index) in sortedList">
+			</thead> 
+			<TransitionGroup name="list" tag="tbody">
+				<tr v-for="(item, index) in sortedTask" :key="item.TITLE">
 					<td>{{ item.TITLE }}</td>
 					<td>{{ item.CREATED_DATE }}</td>
 					<td>{{ item.RESPONSIBLE_LAST_NAME }} {{ item.RESPONSIBLE_NAME[0] }}.</td>
 					<td>{{ item.CREATED_BY_LAST_NAME  }} {{ item.CREATED_BY_NAME[0]  }}.</td>
 					<td>{{ item.UF_PRIORITY }}</td>
 					<td class='btnUpDown'>
-					<span class='btn' v-on:click="pryority_up(item)">
+					<span class='btn' @click="pryority_up(item)">
 						<i class="bi bi-caret-up"></i>
 					</span>
-					<span class='btn' v-on:click="pryority_down(item)">
+					<span class='btn' @click="pryority_down(item)">
 						<i class="bi bi-caret-down"></i>
 					</span>
 					</td>
 				</tr>
-			</tbody>
+			</TransitionGroup>
 			</table>
 			<div class='priority_history' v-for="(item, index) in hist">
 				{{ item.c_date }} <a v-bind:href="item.url">{{ item.user_name }}</a> {{ item.text }}
-			</div>
+			</div class='priority_history' v-model='hist'>
 			</div>
 	`
 	});

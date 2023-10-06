@@ -20,7 +20,7 @@
 	text-transform: uppercase;
 }
 
-.tbl, .tbl td{
+td{
 	padding: 2px;
 	border: 1px solid #333;
 	border-collapse: collapse;
@@ -34,16 +34,24 @@
 	
 }
 
-tbody tr td.btnUpDown .btn {
+tr td.btnUpDown .btn {
 	font-size: 1em;
 	border: 1px solid;
 	padding:0;
 	margin:0;
 	text-align: center;
 }
-tbody tr td.btnUpDown .btn:hover {
+tr td.btnUpDown .btn:hover {
 	background: lightgrey;
 }
+
+.list-move, /* apply transition to moving elements */
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ;
+}
+
+
 
 .priority_history {
 	font-size: 0.9em;
